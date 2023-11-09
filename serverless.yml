@@ -1,0 +1,62 @@
+service: tickets-serverless
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  profile: Julia
+  region: eu-north-1
+  iam:
+    role: arn:aws:iam::429799042192:role/events-cloud
+
+plugins:
+  - serverless-webpack
+
+package:
+  individually: true
+
+functions:
+  getEvents:
+    handler: functions/getEvents/index.handler
+    events:
+      - httpApi:
+         path: '/events'
+         method: GET
+  getEventByID:
+    handler: functions/getEventById/index.handler
+    events:
+      - httpApi:
+         path: '/events/{eventToGoId}'
+         method: GET
+  purchaseEvent:
+    handler: functions/purchaseEvent/index.handler
+    events:
+      - httpApi:
+         path: '/events/{eventToGoId}'
+         method: POST
+  deleteEvent:
+    handler: functions/deleteEvent/index.handler
+    events:
+      - httpApi:
+         path: '/events/{eventToGoId}'
+         method: DELETE
+  addEvent:
+    handler: functions/addEvent/index.handler
+    events:
+      - httpApi:
+         path: '/events'
+         method: POST
+
+resources:
+  Resources:
+    eventsDb:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: event-db
+        AttributeDefinitions:
+          - AttributeName: id 
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
