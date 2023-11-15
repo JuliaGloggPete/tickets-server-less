@@ -10,10 +10,17 @@ exports.handler = async (event, context) => {
     //const indexEvent = eventToGo.purchased.length
 
 
+
+
+// först scanna TABEL EVENT - antal? > 0? ->
+
+
     const newPurchase = {
         biljettnummer: timestamp + "köpt" + (
             eventToGo.purchased ? eventToGo.purchased.length + 1 : 1
         ),
+        name: "Julia",
+        email: "julia@julia.se"
     };
 
     try {
